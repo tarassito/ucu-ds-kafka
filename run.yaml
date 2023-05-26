@@ -1,0 +1,54 @@
+version: '3.9'
+
+volumes:
+  logs:
+    external: true
+
+services:
+  clear_volume:
+    image: busybox
+    volumes:
+    - logs:/data
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo -e 'Volume cleaning ...'
+        rm -rf /data/*
+        echo -e 'Volume is ready'
+
+  consumer:
+    image: tarasssito/ucu-ds-consumer:1.0
+    environment:
+      HOST: ${HOST}
+      PORT: ${PORT}
+      TOPIC: ${TOPIC}
+      CONSUMERS_NUMBER: ${CONSUMERS_NUMBER}
+    volumes:
+      - logs:/app/logs
+    depends_on:
+      - clear_volume
+
+  generation:
+    image: tarasssito/ucu-ds-generation:1.0
+    environment:
+      HOST: ${HOST}
+      PORT: ${PORT}
+      TOPIC: ${TOPIC}
+      DATA_RECORDS: ${DATA_RECORDS}
+      PRODUCERS_NUMBER: ${PRODUCERS_NUMBER}
+    depends_on:
+      - consumer
+
+  report:
+    image: tarasssito/ucu-ds-report:1.0
+    depends_on:
+      consumer:
+        condition: service_completed_successfully
+    volumes:
+      - logs:/app/logs
+
+networks:
+  default:
+    name: kafka_default
+
