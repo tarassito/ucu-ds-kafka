@@ -5,7 +5,7 @@
 1. Run kafka cluster: `docker compose -f init-kafka-cluster.yaml up` Cluster is created 
 with 3 nodes and 4 topics (1,2,5,10 partitions topics).
 
-2. To run data through system and see report results: `docker compose -f test.yaml up`
+2. To run data through system and see report results: `docker compose -f run.yaml up`
 
 **Configs**  
  To interact with system it is  enough to change variables in .env file.   
@@ -15,5 +15,5 @@ with 3 nodes and 4 topics (1,2,5,10 partitions topics).
  To change topic name update TOPIC variable (1part-topic, 2part-topic, 5part-topic, 10part-topic)
  
 **Finish**  
-After all experiments are done run: `docker compose -f test.yaml down` and 
+After all experiments are done run: `docker compose -f run.yaml down` and 
 `docker compose -f init-kafka-cluster.yaml down`
